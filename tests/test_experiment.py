@@ -332,6 +332,16 @@ class EndToEndTests(unittest.TestCase):
             for run in report["run_summaries"]:
                 self.assertEqual(run["invalid_or_unreached_stages"], 0)
                 self.assertEqual(run["task_target_success"], 1)
+                if run["condition"] == "learned_clm":
+                    self.assertGreater(run["amortized_training_cost"], 0)
+                else:
+                    self.assertEqual(run["amortized_training_cost"], 0)
+            self.assertEqual(report["accounting_corrections"], [])
+            for raw_path in (path / "evaluation").rglob("run.json"):
+                raw = json.loads(raw_path.read_text())
+                if raw["condition"] != "learned_clm":
+                    self.assertIsNone(raw["policy_hash"])
+                    self.assertEqual(raw["policy_training_cost_units"], 0)
             for contrast in report["contrasts"]:
                 self.assertEqual(contrast["decision"], "inconclusive")
             # Repeated checkpoints don't turn two held-out tasks into six independent samples.

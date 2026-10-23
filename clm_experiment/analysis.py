@@ -40,7 +40,13 @@ def burden(run: dict) -> dict:
         totals.append(prefix + pair["fresh"]["charged_cost"])
         gaps.append(pair["fresh"]["charged_cost"] - pair["retained"]["charged_cost"])
         failures.append(int(pair["fresh"]["censored"] or pair["retained"]["censored"]))
-    training = run.get("policy_training_cost_units", 0) / run.get("training_amortization_tasks", 1)
+    # Older run files attached the learned policy metadata to control conditions.
+    # Correct their summaries without changing raw artifacts or rerunning probes.
+    training = (
+        run.get("policy_training_cost_units", 0) / run.get("training_amortization_tasks", 1)
+        if run["condition"] == "learned_clm"
+        else 0
+    )
     return {
         "fresh_cost": mean(fresh),
         "amortized_training_cost": training,
@@ -217,6 +223,17 @@ def analyze(
         "run_count": len(runs),
         "missing_planned_runs": missing,
         "artifact_review_verified": reviewed,
+        "accounting_corrections": [
+            {
+                "model": r["model_label"],
+                "task": r["task"],
+                "condition": r["condition"],
+                "reason": "ignored learned-policy training cost attached to a control condition",
+                "ignored_training_cost_units": r["policy_training_cost_units"],
+            }
+            for r in runs
+            if r["condition"] != "learned_clm" and r.get("policy_training_cost_units", 0) != 0
+        ],
         "analysis_parameters": {
             "seed": seed,
             "minimum_effect_units": minimum_effect,

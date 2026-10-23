@@ -320,6 +320,9 @@ class Experiment:
     ):
         if task.split != "test" or condition not in CONDITIONS:
             raise ValueError("Evaluation requires held-out tasks and a known condition")
+        if condition != "learned_clm":
+            # Controls neither use nor pay for the learned engineering-action policy.
+            policy = None
         if condition == "learned_clm":
             if policy is None or policy.model != self.provider.model:
                 raise ValueError("Policy must have been trained on this exact model ID")

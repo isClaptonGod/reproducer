@@ -10,6 +10,27 @@ from clm_experiment.types import dump
 
 
 class AnalysisTests(unittest.TestCase):
+    def test_legacy_control_training_cost_is_corrected_without_rewriting_runs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.records(root, learned_fresh=4, learned_retained=3)
+            original_bytes = {}
+            for path in root.rglob("run.json"):
+                run = json.loads(path.read_text())
+                run["policy_training_cost_units"] = 89.3129
+                dump(path, run)
+                original_bytes[path] = path.read_bytes()
+            report = analyze(root)
+            self.assertEqual(len(report["accounting_corrections"]), 16)
+            for summary in report["run_summaries"]:
+                learned = summary["condition"] == "learned_clm"
+                self.assertEqual(summary["amortized_training_cost"], 89.3129 if learned else 0)
+                self.assertAlmostEqual(summary["net_fresh_cost"], 103.3129 if learned else 20)
+            for contrast in report["contrasts"]:
+                self.assertAlmostEqual(contrast["means"]["fresh_saving"], -83.3129)
+            for path, before in original_bytes.items():
+                self.assertEqual(path.read_bytes(), before)
+
     def records(self, root, learned_fresh, learned_retained):
         # Fabricated records exercise the decision rule only; not experimental findings.
         for task in range(8):

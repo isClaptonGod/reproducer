@@ -21,6 +21,11 @@ Positive control-minus-learned burden and gap differences favor learning. Positi
 learned-minus-control quality differences favor learning. Average task variants within
 their declared original-task group before bootstrapping.
 
+The learned engineering-action policy's training cost belongs only to `learned_clm`.
+The two controls do not use that policy and have zero cost for training it. The analyzer
+corrects legacy logs that erroneously attached this cost to the controls and lists each
+correction in `accounting_corrections`; it leaves the original run files unchanged.
+
 Gap contrasts use matched stages with valid measurements in both conditions. Burden also
 penalizes invalid/unreached stages. Any missing/invalid stage blocks confirmation, so a
 conditional cost comparison cannot silently discard unsuccessful tasks. Excessive censoring

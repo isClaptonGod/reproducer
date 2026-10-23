@@ -76,7 +76,8 @@ def evaluate_grid(config, tasks, output, policies, model_names, conditions, fixt
         print(f"{name} / {task.id} / {condition}", flush=True)
         experiment = Experiment(config, providers[name], output, fixture)
         try:
-            experiment.run(task, condition, policies.get(name), seed, name)
+            policy = policies.get(name) if condition == "learned_clm" else None
+            experiment.run(task, condition, policy, seed, name)
         except (RuntimeError, ValueError, OSError, subprocess.SubprocessError) as exc:
             # Other independent cells remain useful. Failed cells stay in the expected grid.
             errors.append(
