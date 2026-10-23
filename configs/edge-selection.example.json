@@ -1,0 +1,22 @@
+[
+  {
+    "task_json": "../data/sforge-tasks/ad_placement_optimization.json",
+    "work_image": "seededge/edgebench.work.ad_placement_optimization:REPLACE_WITH_PULLED_TAG",
+    "split": "train",
+    "group": "ad_placement_optimization",
+    "stages": [20, 40, 60],
+    "target": 80,
+    "score_field": "score_0_100",
+    "direction": "maximize"
+  },
+  {
+    "task_json": "../data/sforge-tasks/integer_compression_codec.json",
+    "work_image": "seededge/edgebench.work.integer_compression_codec:REPLACE_WITH_PULLED_TAG",
+    "split": "test",
+    "group": "integer_compression_codec",
+    "stages": [20, 40, 60],
+    "target": 80,
+    "score_field": "score_0_100",
+    "direction": "maximize"
+  }
+]
