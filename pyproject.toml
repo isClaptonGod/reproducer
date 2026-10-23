@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clm-history-dependence"
+version = "0.1.0"
+description = "Controlled fresh-continuation experiments for context language models"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+clm-experiment = "clm_experiment.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["clm_experiment*"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B"]

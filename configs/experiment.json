@@ -1,0 +1,53 @@
+{
+  "seed": 1729,
+  "training_amortization_tasks": 1,
+  "models": {
+    "qwen27b": {
+      "provider": "openai",
+      "model": "Qwen/Qwen3.6-27B",
+      "base_url": "http://127.0.0.1:8000/v1",
+      "base_url_env": "QWEN_BASE_URL",
+      "api_key_env": "QWEN_API_KEY",
+      "require_key": false,
+      "token_counter": "provider",
+      "max_output_tokens": 4096,
+      "temperature": 0.7,
+      "send_seed": true
+    },
+    "sonnet46": {
+      "provider": "anthropic",
+      "model": "claude-sonnet-4-6",
+      "base_url": "https://api.anthropic.com/v1",
+      "api_key_env": "ANTHROPIC_API_KEY",
+      "token_counter": "provider",
+      "max_output_tokens": 4096,
+      "temperature": 0.7,
+      "send_seed": false
+    }
+  },
+  "resources": {
+    "cpus": 2,
+    "memory": "2g",
+    "pids": 128,
+    "work_size": "2g"
+  },
+  "agent": {
+    "context_tokens": 32000,
+    "context_reserve": 4096,
+    "max_primary_calls": 256,
+    "progress_interval": 8,
+    "engineering_calls": 8,
+    "probe_calls": 64,
+    "probe_cost_cap": 100.0,
+    "failure_penalty": 100.0,
+    "command_timeout": 120,
+    "grade_every": 4,
+    "quality_tolerance": 1e-8,
+    "cost_weights": {
+      "calls": 1.0,
+      "input_tokens": 0.0001,
+      "output_tokens": 0.0005,
+      "tool_seconds": 0.01
+    }
+  }
+}
